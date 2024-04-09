@@ -1,0 +1,19 @@
+.Home {
+  width: 100%;
+  text-align: center;
+  border: 1px solid #333;
+}
+.Header {
+  background-color: azure;
+}
+.Menu {
+  background-color: aquamarine;
+  height: 50px;
+}
+.Footer {
+  background-color: #3e3e3e;
+}
+.ContentHome {
+  background-color: blueviolet;
+  height: 500px;
+}

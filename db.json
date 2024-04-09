@@ -1,0 +1,290 @@
+{
+  "accounts": [
+    {
+      "id": "1",
+      "email": "Email1@gmail.com",
+      "username": "Email1@gmail.com",
+      "fullname": "Email1@gmail.com",
+      "department": "Sale",
+      "position": "Scrum_Master",
+      "createdAt": "28/3/2024"
+    },
+    {
+      "id": "2",
+      "email": "ssciacovelli1@wsj.com",
+      "username": "ssciacovelli1",
+      "fullname": "Sammy Sciacovelli",
+      "department": "Giám đốc",
+      "position": "PM",
+      "createdAt": "14/3/2024"
+    },
+    {
+      "email": "hcoulbeck2@dell.com",
+      "username": "hcoulbeck2",
+      "fullname": "Halimeda Coulbeck",
+      "department": "Bán hàng",
+      "position": "PM",
+      "createdAt": "14/3/2024",
+      "id": "3"
+    },
+    {
+      "id": "4",
+      "email": "ffalkingham3@gmpg.org",
+      "username": "ffalkingham3",
+      "fullname": "Florentia Falkingham",
+      "department": "Giám đốc",
+      "position": "PM",
+      "createdAt": "14/3/2024"
+    },
+    {
+      "id": "5",
+      "email": "cwheeler4@meetup.com",
+      "username": "cwheeler4",
+      "fullname": "Cammy Wheeler",
+      "department": "Nhân sự",
+      "position": "Dev",
+      "createdAt": "14/3/2024"
+    },
+    {
+      "email": "abernardot5@noaa.gov",
+      "username": "abernardot5",
+      "fullname": "Ann Bernardot",
+      "department": "Marketing",
+      "position": "Test",
+      "createdAt": "14/3/2024",
+      "id": "6"
+    },
+    {
+      "email": "ldelagua6@un.org",
+      "username": "ldelagua6",
+      "fullname": "Laurent Delagua",
+      "department": "Phó giám đốc",
+      "position": "Scrum_Master",
+      "createdAt": "14/3/2024",
+      "id": "7"
+    },
+    {
+      "email": "sgraeser7@cnet.com",
+      "username": "sgraeser7",
+      "fullname": "Shelba Graeser",
+      "department": "No person",
+      "position": "Dev",
+      "createdAt": "14/3/2024",
+      "id": "8"
+    },
+    {
+      "email": "Email1@gmail.com",
+      "username": "Email1@gmail.com",
+      "fullname": "Email1@gmail.com",
+      "department": "Marketing",
+      "position": "Scrum_Master",
+      "createdAt": "19/3/2024",
+      "id": "5745"
+    },
+    {
+      "id": "8478",
+      "email": "Email1@gmail.com",
+      "username": " npx json-server db.json --port 8080",
+      "fullname": " npx json-server db.json --port 8080",
+      "department": "Kỹ thuật",
+      "position": "Test",
+      "createdAt": "26/3/2024"
+    },
+    {
+      "id": "29c2205d-1820-4c15-95d2-a2b8180d5f84",
+      "email": "Email1@gmail.com",
+      "username": "Email1@gmail.com",
+      "fullname": "Email1@gmail.com",
+      "department": "Kỹ thuật",
+      "position": "Dev",
+      "createdAt": "9/4/2024"
+    }
+  ],
+  "departments": [
+    {
+      "id": "1",
+      "name": "Bán hàng"
+    },
+    {
+      "id": "2",
+      "name": "Bảo vệ"
+    },
+    {
+      "id": "3",
+      "name": "Giám đốc"
+    },
+    {
+      "id": "4",
+      "name": "Kỹ thuật"
+    },
+    {
+      "id": "5",
+      "name": "Marketing"
+    },
+    {
+      "id": "6",
+      "name": "Nhân sự"
+    },
+    {
+      "id": "7",
+      "name": "No person"
+    },
+    {
+      "id": "8",
+      "name": "Phó giám đốc"
+    },
+    {
+      "id": "9",
+      "name": "Sale"
+    },
+    {
+      "id": "10",
+      "name": "Tài chính"
+    },
+    {
+      "id": "11",
+      "name": "Thư kí"
+    }
+  ],
+  "position": [
+    {
+      "id": "1",
+      "name": "Dev"
+    },
+    {
+      "id": "2",
+      "name": "Test"
+    },
+    {
+      "id": "3",
+      "name": "Scrum_Master"
+    },
+    {
+      "id": "4",
+      "name": "PM"
+    }
+  ],
+  "products": [
+    {
+      "name": "Gary Legros",
+      "price": "363.00",
+      "material": "Rubber",
+      "warrranty": "Elegant Cotton Shoes",
+      "includeDetail": "Donnie Daniel",
+      "imageProduct": "https://loremflickr.com/640/480/business",
+      "warehouse": "2",
+      "brand": "Toy Inc",
+      "id": "1"
+    },
+    {
+      "name": "Camille Bergnaum",
+      "price": "437.00",
+      "material": "Fresh",
+      "warrranty": "Handcrafted Soft Ball",
+      "includeDetail": "Hubert Aufderhar",
+      "imageProduct": "https://loremflickr.com/640/480/business",
+      "warehouse": "6",
+      "brand": "Kling, Lesch and Padberg",
+      "id": "3"
+    },
+    {
+      "name": "Melissa Stehr",
+      "price": "138.00",
+      "material": "Fresh",
+      "warrranty": "Tasty Wooden Hat",
+      "includeDetail": "Rosemarie Smith",
+      "imageProduct": "https://loremflickr.com/640/480/business",
+      "warehouse": "4",
+      "brand": "O'Reilly and Sons",
+      "id": "4"
+    },
+    {
+      "name": "Della Feeney",
+      "price": "114.00",
+      "material": "Granite",
+      "warrranty": "Gorgeous Soft Bacon",
+      "includeDetail": "Marguerite Wisozk",
+      "imageProduct": "https://loremflickr.com/640/480/business",
+      "warehouse": "5",
+      "brand": "Spinka, Johnson and Schumm",
+      "id": "5"
+    },
+    {
+      "name": "Bonnie Parisian",
+      "price": "151.00",
+      "material": "Frozen",
+      "warrranty": "Small Rubber Fish",
+      "includeDetail": "Gwendolyn Fahey",
+      "imageProduct": "https://loremflickr.com/640/480/business",
+      "warehouse": "8",
+      "brand": "Sawayn Inc",
+      "id": "6"
+    },
+    {
+      "name": "Orville Parker II",
+      "price": "728.00",
+      "material": "Concrete",
+      "warrranty": "Elegant Plastic Gloves",
+      "includeDetail": "Vincent Erdman",
+      "imageProduct": "https://loremflickr.com/640/480/business",
+      "warehouse": "9",
+      "brand": "Brakus - Lehner",
+      "id": "7"
+    },
+    {
+      "name": "Darren Goyette",
+      "price": "649.00",
+      "material": "Metal",
+      "warrranty": "Gorgeous Wooden Table",
+      "includeDetail": "Angie Muller",
+      "imageProduct": "https://loremflickr.com/640/480/business",
+      "warehouse": "3",
+      "brand": "Doyle, Rowe and Pfannerstill",
+      "id": "8"
+    },
+    {
+      "name": "Sarah Gerhold",
+      "price": "691.00",
+      "material": "Steel",
+      "warrranty": "Electronic Fresh Bacon",
+      "includeDetail": "Sergio Will",
+      "imageProduct": "https://loremflickr.com/640/480/business",
+      "warehouse": "3",
+      "brand": "Simonis Inc",
+      "id": "9"
+    },
+    {
+      "name": "Guadalupe Graham",
+      "price": "999.00",
+      "material": "Frozen",
+      "warrranty": "Licensed Rubber Chicken",
+      "includeDetail": "Ray Buckridge",
+      "imageProduct": "https://loremflickr.com/640/480/business",
+      "warehouse": "4",
+      "brand": "Kuhic Group",
+      "id": "10"
+    },
+    {
+      "name": "Caleb Rosenbaum",
+      "price": "1000.00",
+      "material": "Plastic",
+      "warrranty": "Small Cotton Tuna",
+      "includeDetail": "Rickey Green",
+      "imageProduct": "https://loremflickr.com/640/480/business",
+      "warehouse": "6",
+      "brand": "Emard, Kuhic and Schulist",
+      "id": "11"
+    },
+    {
+      "name": "Aubrey McClure",
+      "price": "303.00",
+      "material": "Plastic",
+      "warrranty": "Unbranded Fresh Chicken",
+      "includeDetail": "Mr. Joel Wintheiser",
+      "imageProduct": "https://loremflickr.com/640/480/business",
+      "warehouse": "2",
+      "brand": "Kerluke, O'Keefe and Sporer",
+      "id": "12"
+    }
+  ]
+}
