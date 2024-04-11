@@ -407,7 +407,22 @@ export default function AccountsManage() {
                           header="id: "
                           hideBtnClose={false}
                         >
-                          <Cards data={row}></Cards>
+                          <Cards data={row}>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
+                            >
+                              {row.email}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              Username: {row.username} <br />
+                              Fullname: {row.fullname} <br />
+                              Department: {row.department} <br />
+                              Position: {row.position} <br />
+                              {row.createdate}
+                            </Typography>
+                          </Cards>
                         </BasicModal>
                         <BasicModal
                           variant="outlined"

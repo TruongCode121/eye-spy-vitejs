@@ -1,5 +1,3 @@
-import pro1 from "./pro1.webp";
-import pro2 from "./pro2.webp";
 import pro3 from "./pro3.webp";
 import pro4 from "./pro4.webp";
 import pro5 from "./pro5.webp";
@@ -13,8 +11,6 @@ import TomfordCateye from "./TomfordCateye.jpg";
 import VogueCateye from "./VogueCateye.jpg";
 
 export {
-  pro1,
-  pro2,
   pro3,
   pro4,
   pro5,

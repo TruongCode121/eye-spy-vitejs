@@ -1,3 +1,4 @@
 import InputFields from "./inputFields";
 import SelectFields from "./SelectFields";
-export { InputFields, SelectFields };
+import InputFiles from "./InputFiles";
+export { InputFields, SelectFields, InputFiles };

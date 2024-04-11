@@ -19,9 +19,8 @@ import {
 import DashboardLayout from "./components/module/dashboard/DashboardLayout";
 import AccountsManage from "./components/module/accounts/AccountsManage";
 import ProductsManage from "./components/module/products/ProductsManage";
-import { fetchProducts } from "./redux/productSlice";
+import { fetchBrand, fetchMaterial, fetchProducts } from "./redux/productSlice";
 
-// setupServer();
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -29,6 +28,8 @@ function App() {
     dispatch(fetchDepartment());
     dispatch(fetchPositon());
     dispatch(fetchProducts());
+    dispatch(fetchBrand());
+    dispatch(fetchMaterial());
   }, []);
   return (
     <div>

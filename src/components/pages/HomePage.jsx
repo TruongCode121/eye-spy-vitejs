@@ -24,13 +24,7 @@ import {
   home,
 } from "../../assets/img/home";
 import { ButtonHome } from "../button";
-import {
-  charmant,
-  pro1,
-  pro2,
-  pro3,
-  pro4,
-} from "../../assets/img/products";
+import { charmant, pro3, pro4, pro7, pro8 } from "../../assets/img/products";
 import video from "../../assets/img/home/video1.webm";
 import { FlexBetween, FlexCenter } from "../../assets/style/cssCustom";
 const FontParata = styled.span`
@@ -87,9 +81,9 @@ const HomePage = () => {
     <div>
       <HeaderFooter>
         {/* banner */}
-        <div className={`${FlexBetween}`}>
-          <div className="w-3/5">
-            <p className="my-20">
+        <div className={`${FlexBetween} items-center `}>
+          <div className="w-3/5 flex flex-col gap-y-10">
+            <p>
               <FontParata className="text-5xl">
                 Nâng tầm trải nghiệm mua sắm kính mắt của bạn
               </FontParata>
@@ -160,13 +154,13 @@ const HomePage = () => {
           <div className="w-2/3 ">
             <div className="grid grid-cols-2 gap-8">
               <div className="shadow-2xl">
-                <img src={pro1} alt="" />
+                <img src={pro8} alt="" />
               </div>
               <div>
                 <img src={pro3} alt="" />
               </div>
               <div>
-                <img src={pro2} alt="" />
+                <img src={pro7} alt="" />
               </div>
               <div className="shadow-2xl ">
                 <img src={pro4} alt="" />

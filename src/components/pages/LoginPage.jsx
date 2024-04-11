@@ -27,7 +27,7 @@ const LoginPage = () => {
             className={`w-[50%] h-[60vh] bg-white rounded-[30px] relative overflow-hidden`}
           >
             <div
-              className={`w-1/2 h-full bg-slate-500 text-white  transition-all duration-500 ${
+              className={`w-1/2 h-full bg-[#263544] text-white  transition-all duration-500 ${
                 toggle == true
                   ? "translate-x-[100%]  rounded-l-[100px] rounded-r-[30px]"
                   : "translate-x-0 rounded-l-[30px] rounded-r-[100px]"

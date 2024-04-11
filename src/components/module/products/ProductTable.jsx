@@ -26,7 +26,6 @@ import { FormAccount } from "../../form";
 import { headCells, headCellProducts } from "../../utils/data";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDeleteAccounts } from "../../../redux/accountSlice";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { Skeleton, Stack } from "@mui/material";
@@ -36,6 +35,7 @@ import useSliceString from "../../hook/useSliceString";
 import { SearchData } from "../../search";
 import useSearch from "../../hook/useSearch";
 import { ModalProduct } from "../../modal";
+import { fetchDeleteProducts } from "../../../redux/productSlice";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -134,21 +134,13 @@ EnhancedTableHead.propTypes = {
 
 function EnhancedTableToolbar(props) {
   const { newSlice } = useSliceString();
-  const {
-    selectIds,
-    numSelected,
-    dispatch,
-    setSelected,
-    setPage,
-    // fetchListData,
-    // handlePageDelete,
-  } = props;
+  const { selectIds, numSelected, dispatch, setSelected, setPage } = props;
   const handleDeleteAll = () => {
     Swal.fire({
-      title: `Xóa ${numSelected > 1 ? numSelected : ""} tài khoản?`,
+      title: `Xóa ${numSelected > 1 ? numSelected : ""} sản phẩm?`,
       text: `Bạn sẽ không thể khôi phục ${
         numSelected == 1 ? "" : numSelected
-      } tài khoản có id: ${selectIds
+      } sản phẩm có id: ${selectIds
         .map((item) => {
           return item;
         })
@@ -161,7 +153,7 @@ function EnhancedTableToolbar(props) {
       cancelButtonText: "Hủy",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        dispatch(fetchDeleteAccounts(selectIds));
+        dispatch(fetchDeleteProducts(selectIds));
         setPage(0);
         setSelected([]);
         toast.success("Xóa thành công!");
@@ -393,7 +385,7 @@ export default function ProductsTable() {
                       <img
                         src={row.imageProduct}
                         alt=""
-                        className="w-12 h-12 rounded"
+                        className="w-24 h-20 rounded border-2 border-slate-600"
                       />
                     </TableCell>
                     <TableCell align="left">{row.brand}</TableCell>
@@ -402,6 +394,7 @@ export default function ProductsTable() {
                     <TableCell align="left">{row.warehouse}</TableCell>
                     <TableCell align="left">{row.price} vnd</TableCell>
                     <TableCell align="left">{row.warrranty}</TableCell>
+                    <TableCell align="left">{row.createdAt}</TableCell>
                     <TableCell align="left">
                       <Stack direction="row" spacing={2}>
                         <BasicModal
@@ -416,15 +409,13 @@ export default function ProductsTable() {
                         >
                           <Cards data={row}></Cards>
                         </BasicModal>
-                        <BasicModal
-                          variant="outlined"
+                        <ModalProduct
                           color="warning"
-                          textButton={
+                          textBtn={
                             <BorderColorIcon color="white" fontSize="small" />
                           }
                           data={row}
-                          header="Edit id = "
-                        ></BasicModal>
+                        ></ModalProduct>
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -432,7 +423,7 @@ export default function ProductsTable() {
               })}
               {dataAccount.accounts.length == 0 && (
                 <TableRow>
-                  <TableCell colSpan={11}>
+                  <TableCell colSpan={12}>
                     <Box sx={{ width: "100%" }}>
                       <Skeleton sx={{ height: "50px" }} />
                       <Skeleton sx={{ height: "50px" }} animation="wave" />
@@ -448,7 +439,7 @@ export default function ProductsTable() {
                     height: (dense ? 33 : 53) * emptyRows,
                   }}
                 >
-                  <TableCell colSpan={11} />
+                  <TableCell colSpan={12} />
                 </TableRow>
               )}
             </TableBody>

@@ -9,36 +9,43 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
+import { imageDb } from "../../../firebase/config";
+import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
 import {
   fetchAddNewAccounts,
   fetchUpdateAccounts,
 } from "../../../redux/accountSlice";
 import { toast } from "react-toastify";
+import {
+  fetchAddNewProduct,
+  fetchUpdateProducts,
+} from "../../../redux/productSlice";
+import useLocalStorage from "../../hook/useLocalStorage";
+import { undrawNodata } from "../../../assets/img/home";
 const schema = yup.object({
-  email: yup
-    .string()
-    .email("Please enter valid email address!")
-    .required("Please enter email you!"),
-  username: yup
-    .string()
-    .min(8, "Your username must be at least 8 characters or greater")
-    .required("Enter your username!"),
-  fullname: yup.string().required("Fullname can not be empty!"),
-  department: yup.string().required("Please select department!"),
-  position: yup.string().required("Please select position!"),
+  name: yup.string().required("Enter name product!"),
+  brand: yup.string().required("Please select brand!"),
+  material: yup.string().required("Please select material!"),
+  includeDetail: yup.string().required("Enter your includeDetail!"),
+  warehouse: yup.number().required("enter number in warehoure!"),
+  price: yup.number().required("enter price for product!"),
+  warrranty: yup.string().required("Enter warrranty!"),
 });
 let date = new Date();
 let year = date.getFullYear();
 let month = date.getUTCMonth() + 1;
 let day = date.getUTCDate();
 const ProductsForm = ({ data, btnSubmit = "Create", closeModal }) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [images, setImages] = useState(false);
+  const [img, setImg] = useState("");
+  const [imgUrl, setImgUrl] = useState("");
+  // const [images, setImages] = useLocalStorage("IMAGES", []);
+  // const [isDragging, setIsDragging] = useState(false);
   const fileRef = useRef(null);
   const { dataAccount, departments, positions } = useSelector(
     (state) => state.accounts
   );
-
+  const { brands, materials } = useSelector((state) => state.products);
+  console.log("brands", brands);
   const {
     handleSubmit,
     reset,
@@ -53,37 +60,46 @@ const ProductsForm = ({ data, btnSubmit = "Create", closeModal }) => {
     fileRef.current.click();
   };
   const onFileSelect = (e) => {
-    // let newArr = [];
-    const files = e.target.files[0];
-    // if (files.length == 0) return;
-    console.log("files", files);
+    console.log("e.target.files[0]", e.target.files[0]);
+    const imgRef = ref(imageDb, `files/${uuidv4()}`);
+    uploadBytes(imgRef, e.target.files[0]);
+    setTimeout(() => {
+      fetchImgFirebase();
+    }, 1000);
   };
-  console.log("images", images);
   const dispatch = useDispatch();
-  const handleAddNewAccount = (values) => {
-    closeModal();
+  const handleAddNewProduct = (values) => {
     console.log("update item", values);
+    if (imgUrl.length > 0) {
+      closeModal();
+    }
     if (data) {
       let id = data.id;
       let putAccount = {
-        email: values.email,
-        username: values.username,
-        fullname: values.fullname,
-        department: values.department,
-        position: values.position,
+        name: values.name,
+        imageProduct: imgUrl,
+        brand: values.brand,
+        material: values.material,
+        includeDetail: values.includeDetail,
+        warehouse: values.warehouse,
+        price: values.price,
+        warrranty: values.warrranty,
         createdAt:
           data.createdAt == "" || data.createdAt == undefined
             ? `${day}/${month}/${year}`
             : data.createdAt,
       };
       dispatch(
-        fetchUpdateAccounts({
+        fetchUpdateProducts({
           id,
-          email: values.email,
-          username: values.username,
-          fullname: values.fullname,
-          department: values.department,
-          position: values.position,
+          name: values.name,
+          imageProduct: imgUrl.length > 0 ? imgUrl : data.imageProduct,
+          brand: values.brand,
+          material: values.material,
+          includeDetail: values.includeDetail,
+          warehouse: values.warehouse,
+          price: values.price,
+          warrranty: values.warrranty,
           createdAt:
             data.createdAt == "" || data.createdAt == undefined
               ? `${day}/${month}/${year}`
@@ -91,66 +107,54 @@ const ProductsForm = ({ data, btnSubmit = "Create", closeModal }) => {
         })
       );
       if (
-        values.email != data.email ||
-        values.username != data.username ||
-        values.fullname != data.fullname ||
-        values.department != data.department ||
-        values.position != data.position
+        values.name != data.name ||
+        imgUrl != data.imageProduct ||
+        values.brand != data.brand ||
+        values.material != data.material ||
+        values.includeDetail != data.includeDetail ||
+        values.warehouse != data.warehouse ||
+        values.price != data.price ||
+        values.warrranty != data.warrranty
       ) {
-        toast.success("Update item success!");
+        toast.success("Update product success!");
+        closeModal();
       } else {
         toast.warning("No change value!");
       }
     } else {
       let newAccount = {
         id: uuidv4(),
-        email: values.email,
-        username: values.username,
-        fullname: values.fullname,
-        department: values.department,
-        position: values.position,
+        name: values.name,
+        imageProduct: imgUrl,
+        brand: values.brand,
+        material: values.material,
+        includeDetail: values.includeDetail,
+        warehouse: values.warehouse,
+        price: values.price,
+        warrranty: values.warrranty,
         createdAt: `${day}/${month}/${year}`,
       };
-      console.log("newAccount", newAccount);
-      dispatch(fetchAddNewAccounts(newAccount));
-      toast.success("Thêm mới account thành công!");
+      dispatch(fetchAddNewProduct(newAccount));
+      toast.success("Thêm mới product thành công!");
+
       reset();
     }
   };
+  const fetchImgFirebase = () => {
+    listAll(ref(imageDb, "files")).then((imgs) => {
+      console.log("imgs", imgs);
+      imgs.items.map((item) => {
+        getDownloadURL(item).then((url) => {
+          setImgUrl(url);
+        });
+      });
+    });
+  };
+  console.log(imgUrl);
   return (
-    <>
-      <form action="" onSubmit={handleSubmit(handleAddNewAccount)}>
+    <div className="max-h-[80vh] overflow-auto scrollbar-thin scrollbar-corner-slate-800">
+      <form action="" onSubmit={handleSubmit(handleAddNewProduct)}>
         <Stack sx={{ my: 2 }} bgcolor="lightblue" height={2}></Stack>
-        <div className="mb-3">
-          <div
-            className="w-full p-2           
-            border-dashed border-2 
-          rounded cursor-pointer
-          border-cyan-500"
-            onClick={handleSelectFile}
-          >
-            <input
-              type="file"
-              multiple
-              ref={fileRef}
-              className="d-none"
-              onChange={onFileSelect}
-            />
-            <h1 className="flex-col flex items-center text-xl gap-x-3 justify-center text-gray-600 font-medium">
-              <CloudDoneIcon></CloudDoneIcon>
-              <span>Choose file in computer!</span>
-            </h1>
-          </div>
-          <div className="grid gap-x-4 mt-2  grid-cols-4 w-full ">
-            {isDragging && (
-              <div className="w-full h-20 bg-slate-500 rounded flex justify-end text-cyan-500">
-                <CloseIcon
-                  sx={{ fontSize: "17px", m: "3px", cursor: "pointer" }}
-                ></CloseIcon>
-              </div>
-            )}
-          </div>
-        </div>
         <TextField
           label="Name product"
           defaultValue={data ? data.name : ""}
@@ -160,51 +164,111 @@ const ProductsForm = ({ data, btnSubmit = "Create", closeModal }) => {
           helperText={errors.name && errors.name.message}
           sx={{ width: "100%", mb: 2 }}
         ></TextField>
-        <TextField
-          label="Username"
-          defaultValue={data ? data.username : ""}
-          {...register("username")}
-          variant="standard"
-          error={errors.username && true}
-          helperText={errors.username && errors.username.message}
-          sx={{ width: "100%", mb: 2 }}
-        ></TextField>
-        <TextField
-          label="Fullname"
-          variant="standard"
-          defaultValue={data ? data.fullname : ""}
-          {...register("fullname")}
-          error={errors.fullname && true}
-          helperText={errors.fullname && errors.fullname.message}
-          sx={{ width: "100%", mb: 2 }}
-        ></TextField>
-        <br />
+        {/* file upload */}
+        <div className="mb-3 flex justify-center">
+          <div
+            className={`w-1/3 p-2 
+            border-dashed border-2
+          rounded cursor-pointer ${
+            imgUrl.length == 0 ? "border-red-500" : "border-cyan-500"
+          }
+          `}
+            onClick={handleSelectFile}
+          >
+            <img
+              src={imgUrl ? imgUrl : data ? data.imageProduct : undrawNodata}
+              alt="Not image product !"
+              className="shadow mb-2"
+            />
+            <div>
+              <input
+                type="file"
+                ref={fileRef}
+                className="d-none"
+                onChange={onFileSelect}
+              />
+              <button
+                type="button"
+                className="py-2 flex w-full items-center text-xl gap-x-3 justify-center font-medium bg-primary rounded text-white"
+              >
+                <CloudDoneIcon></CloudDoneIcon>
+                <span>Upload</span>
+              </button>
+            </div>
+          </div>
+        </div>
         <SelectFields
-          Label={"Select a Department"}
-          data={departments}
+          Label={"Select a brand"}
+          data={brands}
           status=""
-          values={data ? data.department : ""}
+          values={data ? data.brand : ""}
           register={register}
-          name="department"
-          error={errors.department && true}
-          helperText={errors.department && errors.department.message}
+          name="brand"
+          error={errors.brand && true}
+          helperText={errors.brand && errors.brand.message}
         ></SelectFields>
-        <br />
         <SelectFields
-          Label={"Select a Postion"}
-          data={positions}
-          status="position"
+          Label={"Select a material"}
+          data={materials}
+          status=""
+          values={data ? data.material : ""}
           register={register}
-          name="position"
-          values={data ? data.position : ""}
-          error={errors.position && true}
-          helperText={errors.position && errors.position.message}
+          name="material"
+          error={errors.material && true}
+          helperText={errors.material && errors.material.message}
         ></SelectFields>
+        <TextField
+          label="IncludeDetail"
+          variant="standard"
+          defaultValue={data ? data.includeDetail : ""}
+          {...register("includeDetail")}
+          error={errors.includeDetail && true}
+          helperText={errors.includeDetail && errors.includeDetail.message}
+          sx={{ width: "100%", mb: 2 }}
+        ></TextField>
+        <TextField
+          label="Warehouse"
+          variant="standard"
+          defaultValue={data ? data.warehouse : ""}
+          {...register("warehouse")}
+          error={errors.warehouse && true}
+          helperText={errors.warehouse && errors.warehouse.message}
+          sx={{ width: "100%", mb: 2 }}
+        ></TextField>
+        <TextField
+          label="Price"
+          variant="standard"
+          defaultValue={data ? data.price : ""}
+          {...register("price")}
+          error={errors.price && true}
+          helperText={errors.price && errors.price.message}
+          sx={{ width: "100%", mb: 2 }}
+        ></TextField>
+        <TextField
+          label="Warrranty"
+          variant="standard"
+          defaultValue={data ? data.warrranty : ""}
+          {...register("warrranty")}
+          error={errors.warrranty && true}
+          helperText={errors.warrranty && errors.warrranty.message}
+          sx={{ width: "100%", mb: 2 }}
+        ></TextField>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium
+        nihil incidunt quae cupiditate exercitationem qui animi eaque aperiam a
+        quo impedit aspernatur, corrupti atque modi eos, nam autem explicabo.
+        Repellendus? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Laudantium nihil incidunt quae cupiditate exercitationem qui animi eaque
+        aperiam a quo impedit aspernatur, corrupti atque modi eos, nam autem
+        explicabo. Repellendus? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Laudantium nihil incidunt quae cupiditate
+        exercitationem qui animi eaque aperiam a quo impedit aspernatur,
+        corrupti atque modi eos, nam autem explicabo. Repellendus?
+        <br />
         <Typography sx={{ float: "right" }} component="div">
           <CpnButton>{btnSubmit}</CpnButton>
         </Typography>
       </form>
-    </>
+    </div>
   );
 };
 

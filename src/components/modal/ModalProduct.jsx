@@ -15,17 +15,24 @@ const style = {
   maxWidth: 700,
   bgcolor: "background.paper",
   boxShadow: 24,
+  // p: "200px",
   p: 4,
 };
 
-export default function ModalProduct() {
+export default function ModalProduct({
+  textBtn = "Product Add New",
+  data,
+  color = "success",
+}) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   return (
     <div>
-      <Button onClick={handleOpen}>Open modal</Button>
+      <Button onClick={handleOpen} color={color} variant="outlined">
+        {textBtn}
+      </Button>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -47,7 +54,7 @@ export default function ModalProduct() {
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
             </Typography>
-            <ProductsForm></ProductsForm>
+            <ProductsForm closeModal={handleClose} data={data}></ProductsForm>
           </Box>
         </Fade>
       </Modal>

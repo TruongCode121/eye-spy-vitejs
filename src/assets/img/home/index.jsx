@@ -24,6 +24,7 @@ import undrawLogin from "./undrawLogin.png";
 import undrawDreamer from "./undrawDreamer.png";
 import undrawAugmented from "./undrawAugmented.png";
 import logoAdmin from "./logoAdmin.png";
+import undrawNodata from "./undrawNodata.png";
 export {
   hom3,
   hom4,
@@ -51,4 +52,5 @@ export {
   undrawDreamer,
   undrawAugmented,
   logoAdmin,
+  undrawNodata,
 };

@@ -276,15 +276,109 @@
       "id": "11"
     },
     {
+      "id": "12",
       "name": "Aubrey McClure",
-      "price": "303.00",
-      "material": "Plastic",
-      "warrranty": "Unbranded Fresh Chicken",
-      "includeDetail": "Mr. Joel Wintheiser",
       "imageProduct": "https://loremflickr.com/640/480/business",
-      "warehouse": "2",
-      "brand": "Kerluke, O'Keefe and Sporer",
-      "id": "12"
+      "brand": "ESPRIT - USA",
+      "material": "Acetate Plastic + Titanium",
+      "includeDetail": "Mr. Joel Wintheiser",
+      "warehouse": 2,
+      "price": 303,
+      "warrranty": "Unbranded Fresh Chicken",
+      "createdAt": "11/4/2024"
+    },
+    {
+      "id": "128ddce2-3e21-417f-a117-fd994b216450",
+      "name": "ádsdasdasd",
+      "imageProduct": "https://firebasestorage.googleapis.com/v0/b/eye-spy-vitejs-ff812.appspot.com/o/files%2F49ebfc22-eae1-41e8-9d62-25946a2ee1a0?alt=media&token=1f45b72d-943e-4086-86c6-daa48d42febe",
+      "brand": "Agnes B - FRANCE",
+      "material": "Acetate Plastic + Titanium",
+      "includeDetail": "ádasdasd",
+      "warehouse": 232,
+      "price": 232323,
+      "warrranty": "ádasd",
+      "createdAt": "11/4/2024"
+    },
+    {
+      "id": "6906ce51-749d-40c4-ba08-150ed2bde6e5",
+      "name": "Aubrey McClure 12a",
+      "imageProduct": "https://firebasestorage.googleapis.com/v0/b/eye-spy-vitejs-ff812.appspot.com/o/files%2F4e181387-39c0-4fee-84b4-4bc21b0eabdb?alt=media&token=5533d246-fad8-45fc-b395-dc4ccd399b1f",
+      "brand": "JIMMYCHOO - ITALY",
+      "material": "Acetate Plastic + Titanium",
+      "includeDetail": "ádl",
+      "warehouse": 2331111111111111,
+      "price": 232323,
+      "warrranty": "ád",
+      "createdAt": "11/4/2024"
+    }
+  ],
+  "brands": [
+    {
+      "id": "1",
+      "name": "JIMMYCHOO - ITALY"
+    },
+    {
+      "id": "2",
+      "name": "Agnes B - FRANCE"
+    },
+    {
+      "id": "3",
+      "name": "ESPRIT - USA"
+    },
+    {
+      "id": "4",
+      "name": "ESPRIT ROUND"
+    },
+    {
+      "id": "5",
+      "name": "RAYBAN - ITALY"
+    },
+    {
+      "id": "6",
+      "name": "PRADA - ITALY"
+    },
+    {
+      "id": "7",
+      "name": " VOGUE - ITALY"
+    }
+  ],
+  "materials": [
+    {
+      "id": "1",
+      "name": "Titanium"
+    },
+    {
+      "id": "2",
+      "name": "Acetate Plastic + Titanium"
+    },
+    {
+      "id": "3",
+      "name": "Acetate Plastic"
+    }
+  ],
+  "images": [
+    {
+      "id": "2927"
+    },
+    {
+      "id": "6677",
+      "formData": {}
+    },
+    {
+      "id": "13ed",
+      "formData": {}
+    },
+    {
+      "id": "a772",
+      "formData": {}
+    },
+    {
+      "id": "29bf",
+      "file": {}
+    },
+    {
+      "id": "e09e",
+      "file": {}
     }
   ]
 }

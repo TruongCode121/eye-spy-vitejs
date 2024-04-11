@@ -8,14 +8,14 @@ const ToggleButton = () => {
   const dispatch = useDispatch();
   return (
     <div
-      className={`h-[32px] w-[64px] bg-slate-700 rounded-full flex items-center cursor-pointer`}
+      className={`h-[32px] w-[64px]  bg-slate-600 rounded-full flex items-center cursor-pointer`}
       onClick={() => {
         dispatch(setToggleMenu(!toggleMenu));
       }}
     >
       <div
-        className={`h-[26px] w-[26px] bg-white rounded-full ml-1  transition-all duration-500 ${
-          !toggleMenu ? "translate-x-[30px] 0" : ""
+        className={`h-[26px] w-[26px] rounded-full ml-1 bg-white shadow-sm transition-all duration-500 ${
+          !toggleMenu ? "translate-x-[30px] " : ""
         }`}
       ></div>
     </div>

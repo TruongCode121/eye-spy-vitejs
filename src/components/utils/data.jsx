@@ -56,17 +56,18 @@ const headCellProducts = [
     label: "Id",
   },
   {
-    id: "image",
-    numeric: false,
-    disablePadding: false,
-    label: "Image",
-  },
-  {
     id: "name",
     numeric: true,
     disablePadding: false,
     label: "Name",
   },
+  {
+    id: "image",
+    numeric: false,
+    disablePadding: false,
+    label: "Image",
+  },
+
   {
     id: "brand",
     numeric: true,
@@ -102,6 +103,12 @@ const headCellProducts = [
     numeric: true,
     disablePadding: false,
     label: "Warrranty",
+  },
+  {
+    id: "createdAt",
+    numeric: true,
+    disablePadding: false,
+    label: "CreatedAt",
   },
   {
     id: "action",
