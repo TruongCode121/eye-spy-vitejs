@@ -9,18 +9,11 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
-import { imageDb } from "../../../firebase/config";
-import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
-import {
-  fetchAddNewAccounts,
-  fetchUpdateAccounts,
-} from "../../../redux/accountSlice";
 import { toast } from "react-toastify";
 import {
   fetchAddNewProduct,
   fetchUpdateProducts,
 } from "../../../redux/productSlice";
-import useLocalStorage from "../../hook/useLocalStorage";
 import { undrawNodata } from "../../../assets/img/home";
 const schema = yup.object({
   name: yup.string().required("Enter name product!"),
@@ -38,12 +31,11 @@ let day = date.getUTCDate();
 const ProductsForm = ({ data, btnSubmit = "Create", closeModal }) => {
   const [img, setImg] = useState("");
   const [imgUrl, setImgUrl] = useState("");
-  // const [images, setImages] = useLocalStorage("IMAGES", []);
-  // const [isDragging, setIsDragging] = useState(false);
+  const [file, setFile] = useState("");
   const fileRef = useRef(null);
-  const { dataAccount, departments, positions } = useSelector(
-    (state) => state.accounts
-  );
+  // const { dataAccount, departments, positions } = useSelector(
+  //   (state) => state.accounts
+  // );
   const { brands, materials } = useSelector((state) => state.products);
   console.log("brands", brands);
   const {
@@ -60,40 +52,29 @@ const ProductsForm = ({ data, btnSubmit = "Create", closeModal }) => {
     fileRef.current.click();
   };
   const onFileSelect = (e) => {
-    console.log("e.target.files[0]", e.target.files[0]);
-    const imgRef = ref(imageDb, `files/${uuidv4()}`);
-    uploadBytes(imgRef, e.target.files[0]);
-    setTimeout(() => {
-      fetchImgFirebase();
-    }, 1000);
+    console.log("e.target.files[0]", e.target.files[0]?.name);
+    // let newFile = e.target.files[0];
+    setFile(e.target.files[0]?.name);
+    // const imgRef = ref(imageDb, `files/${uuidv4()}`);
+    // uploadBytes(imgRef, newFile);
+    // fetchImgFirebase();
+    // const imgRef = ref(imageDb, `files/${uuidv4()}`);
+    // uploadBytes(imgRef, newFile);
+    // setTimeout(() => {
+    //   fetchImgFirebase();
+    // }, 1000);
   };
   const dispatch = useDispatch();
   const handleAddNewProduct = (values) => {
     console.log("update item", values);
-    if (imgUrl.length > 0) {
-      closeModal();
-    }
     if (data) {
       let id = data.id;
-      let putAccount = {
-        name: values.name,
-        imageProduct: imgUrl,
-        brand: values.brand,
-        material: values.material,
-        includeDetail: values.includeDetail,
-        warehouse: values.warehouse,
-        price: values.price,
-        warrranty: values.warrranty,
-        createdAt:
-          data.createdAt == "" || data.createdAt == undefined
-            ? `${day}/${month}/${year}`
-            : data.createdAt,
-      };
+
       dispatch(
         fetchUpdateProducts({
           id,
           name: values.name,
-          imageProduct: imgUrl.length > 0 ? imgUrl : data.imageProduct,
+          imageProduct: file.length > 0 ? file : data.imageProduct,
           brand: values.brand,
           material: values.material,
           includeDetail: values.includeDetail,
@@ -108,7 +89,7 @@ const ProductsForm = ({ data, btnSubmit = "Create", closeModal }) => {
       );
       if (
         values.name != data.name ||
-        imgUrl != data.imageProduct ||
+        file != data.imageProduct ||
         values.brand != data.brand ||
         values.material != data.material ||
         values.includeDetail != data.includeDetail ||
@@ -125,7 +106,7 @@ const ProductsForm = ({ data, btnSubmit = "Create", closeModal }) => {
       let newAccount = {
         id: uuidv4(),
         name: values.name,
-        imageProduct: imgUrl,
+        imageProduct: file,
         brand: values.brand,
         material: values.material,
         includeDetail: values.includeDetail,
@@ -136,21 +117,30 @@ const ProductsForm = ({ data, btnSubmit = "Create", closeModal }) => {
       };
       dispatch(fetchAddNewProduct(newAccount));
       toast.success("Thêm mới product thành công!");
-
+      closeModal();
       reset();
     }
   };
-  const fetchImgFirebase = () => {
-    listAll(ref(imageDb, "files")).then((imgs) => {
-      console.log("imgs", imgs);
-      imgs.items.map((item) => {
-        getDownloadURL(item).then((url) => {
-          setImgUrl(url);
-        });
-      });
-    });
+  // const fetchImgFirebase = () => {
+  //   listAll(ref(imageDb, "files")).then((imgs) => {
+  //     console.log("imgs", imgs);
+  //     imgs.items.map((item) => {
+  //       getDownloadURL(item).then((url) => {
+  //         setImgUrl(url);
+  //         console.log(url);
+  //       });
+  //     });
+  //   });
+  // };
+  console.log(file);
+
+  const getLinkImgProduct = (nameImg) => {
+    const imageUrl = new URL(
+      `../../../assets/img/products/${nameImg}`,
+      import.meta.url
+    );
+    return imageUrl;
   };
-  console.log(imgUrl);
   return (
     <div className="max-h-[80vh] overflow-auto scrollbar-thin scrollbar-corner-slate-800">
       <form action="" onSubmit={handleSubmit(handleAddNewProduct)}>
@@ -170,13 +160,19 @@ const ProductsForm = ({ data, btnSubmit = "Create", closeModal }) => {
             className={`w-1/3 p-2 
             border-dashed border-2
           rounded cursor-pointer ${
-            imgUrl.length == 0 ? "border-red-500" : "border-cyan-500"
+            fileRef.length == 0 ? "border-red-500" : "border-cyan-500"
           }
           `}
             onClick={handleSelectFile}
           >
             <img
-              src={imgUrl ? imgUrl : data ? data.imageProduct : undrawNodata}
+              src={
+                file
+                  ? getLinkImgProduct(file)
+                  : data
+                  ? getLinkImgProduct(data.imageProduct)
+                  : undrawNodata
+              }
               alt="Not image product !"
               className="shadow mb-2"
             />
@@ -197,6 +193,16 @@ const ProductsForm = ({ data, btnSubmit = "Create", closeModal }) => {
             </div>
           </div>
         </div>
+        {/* <SelectFields
+          Label={"Select a brand"}
+          data={imgUrl}
+          status=""
+          values={data ? data.brand : ""}
+          register={register}
+          name="brand"
+          error={errors.brand && true}
+          helperText={errors.brand && errors.brand.message}
+        ></SelectFields> */}
         <SelectFields
           Label={"Select a brand"}
           data={brands}

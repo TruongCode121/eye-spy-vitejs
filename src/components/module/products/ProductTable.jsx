@@ -233,7 +233,13 @@ export default function ProductsTable() {
   const rows = productsData;
   //   const rows = dataSearch(dataAccount.accounts, valueSearch);
   console.log("productsData.=", productsData);
-
+  const getLinkImgProduct = (nameImg) => {
+    const imageUrl = new URL(
+      `../../../assets/img/products/${nameImg}`,
+      import.meta.url
+    );
+    return imageUrl;
+  };
   React.useEffect(() => {
     if (valueSearch.length > 0) {
       setPage(0);
@@ -383,9 +389,9 @@ export default function ProductsTable() {
                     </TableCell>
                     <TableCell align="left">
                       <img
-                        src={row.imageProduct}
+                        src={getLinkImgProduct(row.imageProduct)}
                         alt=""
-                        className="w-24 h-20 rounded border-2 border-slate-600"
+                        className="w-20 h-20 rounded border-2 border-slate-600"
                       />
                     </TableCell>
                     <TableCell align="left">{row.brand}</TableCell>

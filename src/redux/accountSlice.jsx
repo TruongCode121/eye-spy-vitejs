@@ -140,6 +140,7 @@ export const fetchAccount = createAsyncThunk(
     return data;
   }
 );
+
 export const fetchDepartment = createAsyncThunk(
   "accounts/fetchDepartment",
   async () => {

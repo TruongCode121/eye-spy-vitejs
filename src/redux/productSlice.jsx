@@ -4,6 +4,7 @@ const initialState = {
   productsData: [],
   brands: [],
   materials: [],
+  carts: [],
 };
 
 export const productSlice = createSlice({
@@ -12,6 +13,53 @@ export const productSlice = createSlice({
   reducers: {
     addNewProduct: (state, action) => {
       state.productsData = [...state.productsData, action.payload];
+    },
+    addToCart: (state, action) => {
+      console.log("ID", action.payload);
+      let indexCarts = state.carts.findIndex(
+        (item) => item.product_id == action.payload
+      );
+      if (state.carts.length <= 0) {
+        state.carts = [
+          {
+            product_id: action.payload,
+            quantity: 1,
+          },
+        ];
+      } else if (indexCarts < 0) {
+        state.carts = [
+          ...state.carts,
+          { product_id: action.payload, quantity: 1 },
+        ];
+      } else {
+        state.carts[indexCarts].quantity = state.carts[indexCarts].quantity + 1;
+      }
+      // localStorage.setItem("CARTS", JSON.stringify(carts));
+      console.log("obj carts", state.carts);
+    },
+    deleteCart: (state, action) => {
+      console.log("action", action.payload);
+      state.carts = state.carts.filter(
+        (item) => !item.product_id.includes(action.payload)
+      );
+    },
+    incrementCart: (state, action) => {
+      console.log("decrementCart", action.payload);
+      state.carts.forEach((item) => {
+        if (item.product_id == action.payload) {
+          item.quantity = item.quantity + 1;
+        }
+      });
+      console.log("decrementCart", state.carts);
+    },
+    decrementCart: (state, action) => {
+      console.log("decrementCart", action.payload);
+      state.carts.forEach((item) => {
+        if (item.product_id == action.payload) {
+          item.quantity = item.quantity - 1;
+        }
+      });
+      console.log("decrementCart", state.carts);
     },
   },
   extraReducers: (builder) => {
@@ -65,7 +113,13 @@ export const productSlice = createSlice({
   },
 });
 
-export const { addNewProduct } = productSlice.actions;
+export const {
+  addNewProduct,
+  addToCart,
+  decrementCart,
+  incrementCart,
+  deleteCart,
+} = productSlice.actions;
 
 export default productSlice.reducer;
 export const fetchProducts = createAsyncThunk(
