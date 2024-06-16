@@ -21,21 +21,34 @@ import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
-import { BasicModal } from "../../modal";
-import { FormAccount } from "../../form";
+import DescriptionIcon from "@mui/icons-material/Description";
 import { headCells, headCellProducts } from "../../utils/data";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
-import { Skeleton, Stack } from "@mui/material";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import { Cards } from "../../card";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Skeleton,
+  Stack,
+} from "@mui/material";
+
 import useSliceString from "../../hook/useSliceString";
 import { SearchData } from "../../search";
 import useSearch from "../../hook/useSearch";
 import { ModalProduct } from "../../modal";
-import { fetchDeleteProducts } from "../../../redux/productSlice";
+import {
+  fetchDeleteProducts,
+  fetchSetOptionsProducts,
+} from "../../../redux/productSlice";
+import DetailsIcon from "@mui/icons-material/Details";
+import { useNavigate } from "react-router-dom";
+import { ButtonHome } from "../../button";
+import ProductFilter from "./ProductFilter";
+import useNumber from "../../hook/useNumber";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -134,7 +147,15 @@ EnhancedTableHead.propTypes = {
 
 function EnhancedTableToolbar(props) {
   const { newSlice } = useSliceString();
-  const { selectIds, numSelected, dispatch, setSelected, setPage } = props;
+  const {
+    selectIds,
+    numSelected,
+    dispatch,
+    setSelected,
+    setPage,
+    handleCloseFilter,
+    handleOpenFilter,
+  } = props;
   const handleDeleteAll = () => {
     Swal.fire({
       title: `Xóa ${numSelected > 1 ? numSelected : ""} sản phẩm?`,
@@ -145,7 +166,7 @@ function EnhancedTableToolbar(props) {
           return item;
         })
         .join(" ## ")}`,
-      icon: "warning",
+      icon: "error",
       showCancelButton: true,
       confirmButtonColor: "#1DC071",
       cancelButtonColor: "#d33",
@@ -202,7 +223,7 @@ function EnhancedTableToolbar(props) {
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
-          <IconButton>
+          <IconButton onClick={handleOpenFilter}>
             <FilterListIcon />
           </IconButton>
         </Tooltip>
@@ -217,8 +238,11 @@ EnhancedTableToolbar.propTypes = {
 
 export default function ProductsTable() {
   const { dataAccount, inputSearch } = useSelector((state) => state.accounts);
-  const { productsData } = useSelector((state) => state.products);
-  const { newSlice } = useSliceString();
+  const { productsData, categorys, brands, materials, productSold, orderList } =
+    useSelector((state) => state.products);
+  const { auth } = useSelector((state) => state.auth);
+  const { darkMode } = useSelector((state) => state.globals);
+  const { convertToNumber } = useNumber();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -226,25 +250,186 @@ export default function ProductsTable() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const dispatch = useDispatch();
-  const { dataSearch } = useSearch();
   const [valueSearch, setValueSearch] = React.useState("");
+  const navigate = useNavigate();
+  const [onFilter, setOnFilter] = React.useState(false);
+  const [dataFilter, setDataFilter] = React.useState([]);
+  const [valueSelect, setValueSelect] = React.useState("");
 
-  //   const rows = dataSearch(dataAccount.accounts, valueSearch);
-  const rows = productsData;
-  //   const rows = dataSearch(dataAccount.accounts, valueSearch);
-  console.log("productsData.=", productsData);
-  const getLinkImgProduct = (nameImg) => {
-    const imageUrl = new URL(
-      `../../../assets/img/products/${nameImg}`,
-      import.meta.url
-    );
-    return imageUrl;
+  // const handleWareHouseProduct = () => {
+  //   let newSoldProduct = [...productSold];
+  //   let newArr = [];
+
+  //   let totalWareHouse = 0;
+  //   newSoldProduct.length > 0 &&
+  //     newSoldProduct.map((item) => {
+  //       let indexProduct = productsData.findIndex(
+  //         (pro) => pro.id == item.product_id
+  //       );
+  //       if (item.product_id == productsData[indexProduct]?.id) {
+  //         totalWareHouse =
+  //           productsData[indexProduct]?.warehouse - item.quantity;
+  //         newArr = [
+  //           ...newArr,
+  //           {
+  //             id: item.product_id,
+  //             name: productsData[indexProduct]?.name,
+  //             imageProduct: productsData[indexProduct]?.imageProduct,
+  //             brand: productsData[indexProduct]?.brand,
+  //             material: productsData[indexProduct]?.material,
+  //             category: productsData[indexProduct]?.category,
+  //             includeDetail: productsData[indexProduct]?.includeDetail,
+  //             warehouse: totalWareHouse,
+  //             price: productsData[indexProduct]?.price,
+  //             warrranty: productsData[indexProduct]?.warrranty,
+  //             createdAt: productsData[indexProduct]?.createdAt,
+  //           },
+  //         ];
+  //       }
+  //     });
+  //   return newArr;
+  // };
+
+  // React.useEffect(() => {
+  //   new Promise((resolve) => {
+  //     setTimeout(() => {
+  //       resolve("sucess");
+  //       dispatch(fetchSetWareHouseProduct(res));
+  //     }, 500);
+  //   });
+  // }, [orderList]);
+  const handleChange = (event) => {
+    setValueSelect(event.target.value);
+  };
+
+  const handleCloseFilter = () => {
+    setOnFilter(false);
+  };
+
+  const handleOpenFilter = () => {
+    setOnFilter(true);
+  };
+  const handleSetOptionProduct = (status) => {
+    let newArr = [...productsData];
+    let arrOption = [];
+    selected.length > 0 &&
+      selected.filter((item) => {
+        let indexProduct = newArr.findIndex((ind) => ind.id == item);
+
+        arrOption = [
+          ...arrOption,
+          {
+            id: item,
+            name: newArr[indexProduct]?.name,
+            imageProduct: newArr[indexProduct]?.imageProduct,
+            brand:
+              status == "brand" ? valueSelect : newArr[indexProduct]?.brand,
+            material:
+              status == "material"
+                ? valueSelect
+                : newArr[indexProduct]?.material,
+            category:
+              status == "category"
+                ? valueSelect
+                : newArr[indexProduct]?.category,
+            includeDetail: newArr[indexProduct]?.includeDetail,
+            warehouse: newArr[indexProduct]?.warehouse,
+            price: newArr[indexProduct]?.price,
+            warrranty: newArr[indexProduct]?.warrranty,
+            createdAt: newArr[indexProduct]?.createdAt,
+          },
+        ];
+      });
+
+    Swal.fire({
+      title: `Đặt lại ${status} cho ${selected.length} sản phẩm?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#1DC071",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đặt lại",
+      cancelButtonText: "Hủy",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        dispatch(fetchSetOptionsProducts(arrOption));
+        toast.success("Đặt lại thành công");
+      }
+    });
+  };
+  const setDataSeach = (data, inputSearch) => {
+    let newArr = [];
+    let valueSearch = inputSearch ? inputSearch.toUpperCase() : "";
+    if (valueSearch.length > 0) {
+      data.map((item) => {
+        let textCategory = item.category;
+        let txtCategoryUp = textCategory.toUpperCase();
+        let txtSearchCategory = txtCategoryUp.includes(valueSearch);
+
+        let textBrand = item.brand;
+        let txtBrandUp = textBrand.toUpperCase();
+        let txtSearchBrand = txtBrandUp.includes(valueSearch);
+
+        let textMaterial = item.material;
+        let txtMaterialUp = textMaterial.toUpperCase();
+        let txtSearchMaterial = txtMaterialUp.includes(valueSearch);
+        if (txtSearchCategory) {
+          newArr = { status: "category", data: categorys };
+        } else if (txtSearchBrand) {
+          newArr = { status: "brand", data: brands };
+        } else if (txtSearchMaterial) {
+          newArr = { status: "material", data: materials };
+        }
+      });
+      return newArr;
+    } else {
+      return newArr;
+    }
+  };
+
+  const dataSearch = (data, inputSearch) => {
+    let newArr = [];
+    let valueSearch = inputSearch ? inputSearch.toUpperCase() : "";
+    if (valueSearch.length > 0) {
+      data.map((item) => {
+        let textNameProduct = item.name;
+        let txtNameProductUp = textNameProduct.toUpperCase();
+        let txtSearch = txtNameProductUp.includes(valueSearch);
+
+        let textCategory = item.category;
+        let txtCategoryUp = textCategory.toUpperCase();
+        let txtSearchCategory = txtCategoryUp.includes(valueSearch);
+
+        let textBrand = item.brand;
+        let txtBrandUp = textBrand.toUpperCase();
+        let txtSearchBrand = txtBrandUp.includes(valueSearch);
+
+        let textMaterial = item.material;
+        let txtMaterialUp = textMaterial.toUpperCase();
+        let txtSearchMaterial = txtMaterialUp.includes(valueSearch);
+        if (
+          txtSearch ||
+          txtSearchCategory ||
+          txtSearchBrand ||
+          txtSearchMaterial
+        ) {
+          newArr = [...newArr, item];
+        }
+      });
+      return newArr;
+    } else {
+      return data;
+    }
+  };
+  const rows = dataSearch(dataFilter, valueSearch);
+  const handleGetIdProduct = (id) => {
+    navigate(`/detail-product?id=${id}`);
   };
   React.useEffect(() => {
     if (valueSearch.length > 0) {
       setPage(0);
     }
   }, [valueSearch]);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -309,35 +494,120 @@ export default function ProductsTable() {
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
+  let a = false;
   return (
     <Box
       sx={{
         width: "100%",
-        bgcolor: "#fff",
+        bgcolor: darkMode == true ? "#1E293B " : "#fff",
         p: 2,
         borderRadius: 2,
       }}
     >
       <div className="flex items-center gap-x-10 justify-between">
         <ModalProduct></ModalProduct>
-        {/* <button className="btn bg-stone-400 " onClick={handlePageDelete}>
-          Delete test
-        </button> */}
-        <SearchData
-          label="Search email account..."
-          setValueSearch={setValueSearch}
-        ></SearchData>
+        <div className="flex w-2/3 justify-end gap-x-2">
+          <div>
+            {auth[0]?.position == "Dev" && (
+              <div className={`flex gap-x-2`}>
+                <Box sx={{ minWidth: 320 }}>
+                  <FormControl
+                    fullWidth
+                    size="medium"
+                    variant="standard"
+                    sx={{
+                      bgcolor: darkMode ? "#334155" : "",
+                      borderRadius: "3px",
+                    }}
+                  >
+                    <InputLabel
+                      id="demo-simple-select-label"
+                      sx={{
+                        color: darkMode == true && "#fff",
+                        fontSize: "15px",
+                      }}
+                    >
+                      Option Product
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={valueSelect}
+                      label="Option Product"
+                      sx={{
+                        color: darkMode == true && "#fff",
+                      }}
+                      onChange={handleChange}
+                    >
+                      <MenuItem value={""}>No value</MenuItem>
+                      {setDataSeach(productsData, valueSearch).data?.length >
+                        0 &&
+                        setDataSeach(productsData, valueSearch).data.map(
+                          (item) => (
+                            <MenuItem key={item.id} value={item.name}>
+                              {item.name}
+                            </MenuItem>
+                          )
+                        )}
+                    </Select>
+                  </FormControl>
+                </Box>
+                {valueSelect != "" && (
+                  <ButtonHome
+                    onClick={() => {
+                      handleSetOptionProduct(
+                        setDataSeach(productsData, valueSearch).status
+                      );
+                    }}
+                    className="bg-yellow-600 rounded text-yellow-50"
+                  >
+                    Đặt lại
+                  </ButtonHome>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="w-1/2">
+            <SearchData
+              className="w-full"
+              label="Search name, category, brand, material product..."
+              setValueSearch={setValueSearch}
+            ></SearchData>{" "}
+          </div>
+        </div>
       </div>
+      {/* <div
+        className={`flex justify-end transition-all duration-700 ${
+          onFilter ? "h-14 mt-3 " : "h-0"
+        }`}
+      > */}
+      <div
+        className={`fixed top-[80px] right-0 transition-all duration-700 w-[300px] h-[100vh]  z-10  shadow  bg-white ${
+          onFilter ? "translate-x-0" : "translate-x-[100%]"
+        }`}
+      >
+        <ButtonHome
+          className="w-full bg-teal-500 text-white hover:bg-teal-600 "
+          onClick={handleCloseFilter}
+        >
+          Đóng
+        </ButtonHome>
 
+        <ProductFilter
+          setPage={setPage}
+          setDataFilter={setDataFilter}
+        ></ProductFilter>
+      </div>
+      {/* </div> */}
       <Paper sx={{ my: 2 }}>
         <EnhancedTableToolbar
           selectIds={selected}
           dispatch={dispatch}
-          // handlePageRezo={handlePageRezo}
           numSelected={selected.length}
           setSelected={setSelected}
           setPage={setPage}
-          // fetchListData={fetchListData}
+          handleOpenFilter={handleOpenFilter}
+          handleCloseFilter={handleCloseFilter}
         />
         <TableContainer>
           <Table
@@ -378,7 +648,9 @@ export default function ProductsTable() {
                         }}
                       />
                     </TableCell>
-                    <TableCell align="left">{row.id}</TableCell>
+                    <TableCell align="left">
+                      <div className="overflow-visible">{index + 1}</div>
+                    </TableCell>
                     <TableCell
                       component="th"
                       id={labelId}
@@ -387,34 +659,41 @@ export default function ProductsTable() {
                     >
                       {row.name}
                     </TableCell>
+                    <TableCell align="left">{row.category}</TableCell>
                     <TableCell align="left">
                       <img
-                        src={getLinkImgProduct(row.imageProduct)}
+                        src={row.imageProduct}
                         alt=""
                         className="w-20 h-20 rounded border-2 border-slate-600"
                       />
                     </TableCell>
                     <TableCell align="left">{row.brand}</TableCell>
                     <TableCell align="left">{row.material}</TableCell>
-                    <TableCell align="left">{row.includeDetail}</TableCell>
-                    <TableCell align="left">{row.warehouse}</TableCell>
-                    <TableCell align="left">{row.price} vnd</TableCell>
+                    <TableCell align="left">
+                      <div className=" flex justify-center py-1 rounded-full bg-slate-600 w-[40px] h-[40px] items-center text-white">
+                        <Tooltip title={row.includeDetail} placement="top">
+                          <DescriptionIcon></DescriptionIcon>
+                        </Tooltip>
+                      </div>
+                    </TableCell>
+                    <TableCell align="left">
+                      {row.warehouse < 0 ? 0 : row.warehouse}
+                    </TableCell>
+                    <TableCell align="left">
+                      {convertToNumber(row.price)} đ
+                    </TableCell>
                     <TableCell align="left">{row.warrranty}</TableCell>
                     <TableCell align="left">{row.createdAt}</TableCell>
                     <TableCell align="left">
                       <Stack direction="row" spacing={2}>
-                        <BasicModal
-                          variant="outlined"
-                          color="primary"
-                          textButton={
-                            <AssignmentIndIcon color="white" fontSize="small" />
-                          }
-                          data={row}
-                          header="id: "
-                          hideBtnClose={false}
+                        <div
+                          className="border-1 px-3 rounded bg-teal-600 text-white flex items-center hover:bg-teal-500"
+                          onClick={() => {
+                            handleGetIdProduct(row.id);
+                          }}
                         >
-                          <Cards data={row}></Cards>
-                        </BasicModal>
+                          <DetailsIcon fontSize="small" />
+                        </div>
                         <ModalProduct
                           color="warning"
                           textBtn={
@@ -429,7 +708,7 @@ export default function ProductsTable() {
               })}
               {dataAccount.accounts.length == 0 && (
                 <TableRow>
-                  <TableCell colSpan={12}>
+                  <TableCell colSpan={13}>
                     <Box sx={{ width: "100%" }}>
                       <Skeleton sx={{ height: "50px" }} />
                       <Skeleton sx={{ height: "50px" }} animation="wave" />
@@ -445,7 +724,7 @@ export default function ProductsTable() {
                     height: (dense ? 33 : 53) * emptyRows,
                   }}
                 >
-                  <TableCell colSpan={12} />
+                  <TableCell colSpan={13} />
                 </TableRow>
               )}
             </TableBody>

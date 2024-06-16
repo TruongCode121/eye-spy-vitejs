@@ -12,6 +12,7 @@ export default function SelectFields({
   helperText,
   values,
   control,
+  size,
 }) {
   return (
     <>
@@ -20,6 +21,7 @@ export default function SelectFields({
         <Select
           labelId="demo-select-small-label"
           id="demo-select-small"
+          size={size}
           defaultValue={values}
           label={Label}
           {...register(name)}

@@ -14,6 +14,7 @@ import hom14 from "./hom14.webp";
 import hom15 from "./hom15.webp";
 import hom16 from "./hom16.webp";
 import hom17 from "./hom17.webp";
+import hom18 from "./hom18.webp";
 import hom20 from "./hom20.png";
 import banner1 from "./banner1.webp";
 import banner2 from "./banner2.webp";
@@ -25,6 +26,11 @@ import undrawDreamer from "./undrawDreamer.png";
 import undrawAugmented from "./undrawAugmented.png";
 import logoAdmin from "./logoAdmin.png";
 import undrawNodata from "./undrawNodata.png";
+import undraw_Done_re_oak4 from "./undraw_Done_re_oak4.png";
+import undraw_Filter_re_sa16 from "./undraw_Filter_re_sa16.png";
+import undraw_Resume_re_hkth from "./undraw_Resume_re_hkth.png";
+import undraw_shopping_app_flsj from "./undraw_shopping_app_flsj.png";
+import qrpay from "./qrpay.png";
 export {
   hom3,
   hom4,
@@ -42,6 +48,7 @@ export {
   hom15,
   hom16,
   hom17,
+  hom18,
   hom20,
   banner1,
   banner2,
@@ -53,4 +60,9 @@ export {
   undrawAugmented,
   logoAdmin,
   undrawNodata,
+  undraw_Done_re_oak4,
+  undraw_Filter_re_sa16,
+  undraw_Resume_re_hkth,
+  undraw_shopping_app_flsj,
+  qrpay,
 };

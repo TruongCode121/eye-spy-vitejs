@@ -49,7 +49,9 @@ export default function ModalProduct({
         <Fade in={open}>
           <Box sx={style}>
             <Typography id="transition-modal-title" variant="h6" component="h2">
-              Text in a modal
+              {!data
+                ? "Create product new in data!"
+                : `Update product id: ${data.id}`}
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               Duis mollis, est non commodo luctus, nisi erat porttitor ligula.

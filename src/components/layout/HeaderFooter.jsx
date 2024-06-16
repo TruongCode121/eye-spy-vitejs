@@ -44,7 +44,7 @@ const HeaderFooter = ({ children, status = false }) => {
     navigate(link);
   };
   return (
-    <div>
+    <div className="dark:bg-slate-800">
       <Header></Header>
       <div className={`${status == false && "px-8"}`}>{children}</div>
       <div className={`-mx-8 ${status == false && "mt-32"} relative`}>
@@ -56,16 +56,22 @@ const HeaderFooter = ({ children, status = false }) => {
           <div className=" flex justify-between mx-8 gap-x-8">
             <div className="w-1/3 text-white">
               <UlFooter>
-                <li>
-                  <HomeWorkIcon></HomeWorkIcon> <span> Trang chủ</span>
-                </li>
-                <li>
-                  <ProductionQuantityLimitsIcon></ProductionQuantityLimitsIcon>
-                  <span> Sản phẩm</span>
-                </li>
-                <li>
-                  <PieChartIcon></PieChartIcon> <span>Về Eye Spy</span>
-                </li>
+                <NavLink to="/">
+                  <li>
+                    <HomeWorkIcon></HomeWorkIcon> <span> Trang chủ</span>
+                  </li>
+                </NavLink>
+                <NavLink to="/products-page">
+                  <li>
+                    <ProductionQuantityLimitsIcon></ProductionQuantityLimitsIcon>
+                    <span> Sản phẩm</span>
+                  </li>
+                </NavLink>
+                <NavLink to="/introduce-page">
+                  <li>
+                    <PieChartIcon></PieChartIcon> <span>Về Eye Spy</span>
+                  </li>
+                </NavLink>
               </UlFooter>
               <div className="bg-white inline-block p-2 my-4">
                 <img src={logo} alt="" />

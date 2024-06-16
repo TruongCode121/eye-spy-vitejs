@@ -1,70 +1,76 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import { Typography, Stack } from "@mui/material";
 import Modal from "@mui/material/Modal";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
-import RemoveIcon from "@mui/icons-material/Remove";
-import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import { CpnButton } from "../button";
 import zIndex from "@mui/material/styles/zIndex";
 import useSliceString from "../hook/useSliceString";
-import { FormAccount } from "../form";
+import { ButtonHome } from "../button";
+import FormAction from "../module/optionProducts/FormAction";
 
 export default function BasicModal({
   textButton = "Create new Account",
   children,
   variant,
   color,
+  labelInput,
   data,
+  className,
   header = "  Create New Account",
+  fetchAddRedux,
+  fetchUpdateRedux,
+  onClick = () => {},
 }) {
   const [open, setOpen] = React.useState(false);
-  const [mouseTg, setMouseTg] = React.useState(false);
-  const handleOpenModal = () => setOpen(true);
+  // const [mouseTg, setMouseTg] = React.useState(false);
+  const handleOpenModal = () => {
+    onClick();
+    setOpen(true);
+  };
   const handleCloseModal = () => setOpen(false);
   const { newSlice } = useSliceString();
-  const useMouse = () => {
-    const [mouseTion, setMouseTion] = React.useState({
-      x: 0,
-      y: 0,
-    });
-    React.useEffect(() => {
-      if (open) {
-        const handle = (e) => {
-          if (mouseTg) {
-            setMouseTion({
-              x: e.pageX,
-              y: e.pageY + 250,
-            });
-            console.log("ok");
-          }
-        };
-        document.addEventListener("mousemove", handle);
-        return () => {
-          document.removeEventListener("mousemove", handle);
-        };
-      }
-    });
-    React.useEffect(() => {
-      !open && setMouseTion({ x: 0, y: 0 });
-    }, [open]);
-    return mouseTion;
-  };
+  // const useMouse = () => {
+  //   const [mouseTion, setMouseTion] = React.useState({
+  //     x: 0,
+  //     y: 0,
+  //   });
+  //   React.useEffect(() => {
+  //     if (open) {
+  //       const handle = (e) => {
+  //         if (mouseTg) {
+  //           setMouseTion({
+  //             x: e.pageX,
+  //             y: e.pageY + 250,
+  //           });
+  //           console.log("ok");
+  //         }
+  //       };
+  //       document.addEventListener("mousemove", handle);
+  //       return () => {
+  //         document.removeEventListener("mousemove", handle);
+  //       };
+  //     }
+  //   });
+  //   React.useEffect(() => {
+  //     !open && setMouseTion({ x: 0, y: 0 });
+  //   }, [open]);
+  //   return mouseTion;
+  // };
 
-  const { x, y } = useMouse();
-  React.useEffect(() => {
-    if (!open) {
-      setMouseTg(false);
-    }
-  });
+  // const { x, y } = useMouse();
+  // React.useEffect(() => {
+  //   if (!open) {
+  //     setMouseTg(false);
+  //   }
+  // });
   const style = {
     position: "absolute",
-    top: `${y > 0 ? `${y}px` : "50%"}`,
-    left: `${x > 0 ? `${x}px` : "50%"}`,
+    // top: `${y > 0 ? `${y}px` : "50%"}`,
+    // left: `${x > 0 ? `${x}px` : "50%"}`,
+    top: `50%`,
+    left: `50%`,
     transform: `translate(-50%, -50%)`,
-    width: 400,
+    width: 500,
     bgcolor: "background.paper",
     borderRadius: "5px",
     boxShadow: 24,
@@ -75,15 +81,9 @@ export default function BasicModal({
 
   return (
     <div>
-      <Button
-        onClick={handleOpenModal}
-        variant={variant}
-        color={color}
-        size="large"
-      >
+      <ButtonHome onClick={handleOpenModal} className={className}>
         {textButton}
-      </Button>
-
+      </ButtonHome>
       <Modal
         open={open}
         onClose={handleCloseModal}
@@ -94,22 +94,15 @@ export default function BasicModal({
       >
         <Box
           sx={style}
-          onClick={() => {
-            if (mouseTg) {
-              setMouseTg(false);
-            }
-          }}
-          className={`${mouseTg && "cursor-pointer"} `}
+          // onClick={() => {
+          //   if (mouseTg) {
+          //     setMouseTg(false);
+          //   }
+          // }}
+          // className={`${mouseTg && "cursor-pointer"} `}
         >
           <div
-            className={`flex justify-between items-center cursor-pointer flex-shrink-0 select-none p-2 rounded-full mb-2 eve  ${
-              mouseTg
-                ? "bg-cyan-500 text-white"
-                : "bg-slate-300 pointer-events-auto"
-            }`}
-            onClick={() => {
-              setMouseTg(true);
-            }}
+            className={`flex justify-between items-center cursor-pointer flex-shrink-0 select-none p-2 mb-2 eve  bg-slate-300 `}
           >
             <Typography
               id="modal-modal-title"
@@ -130,11 +123,13 @@ export default function BasicModal({
           {children ? (
             children
           ) : (
-            <FormAccount
+            <FormAction
               data={data}
-              btnSubmit={data && "Save"}
               closeModal={handleCloseModal}
-            ></FormAccount>
+              fetchAddRedux={fetchAddRedux}
+              fetchUpdateRedux={fetchUpdateRedux}
+              labelInput={labelInput}
+            ></FormAction>
           )}
         </Box>
       </Modal>

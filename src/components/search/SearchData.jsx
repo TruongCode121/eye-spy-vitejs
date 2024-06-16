@@ -1,19 +1,31 @@
 import { TextField } from "@mui/material";
 import React from "react";
-const SearchData = ({ label, setValueSearch }) => {
+import { useSelector } from "react-redux";
+const SearchData = ({ label, setValueSearch, className = "w-1/3" }) => {
+  const { darkMode } = useSelector((state) => state.globals);
   const handleChangeSearch = (e) => {
     setValueSearch(e.target.value);
   };
   return (
-    <div className="w-1/3">
+    <>
       <TextField
         id="standard-basic"
         label={label}
+        InputLabelProps={{ style: { color: darkMode == true && "#fff" } }}
         variant="standard"
-        className="w-full"
+        className={`${className}`}
         onChange={handleChangeSearch}
+        inputProps={{
+          style: {
+            color: darkMode == true && "#fff",
+            bgcolor: darkMode == true && "#334155",
+          },
+        }}
+        sx={{
+          bgcolor: darkMode == true && "#334155",
+        }}
       />
-    </div>
+    </>
   );
 };
 

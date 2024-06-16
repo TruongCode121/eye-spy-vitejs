@@ -1,3 +1,4 @@
-import FormAccount from "./FormAccount";
 import FormContracts from "./FormContracts";
-export { FormAccount, FormContracts };
+import FormLogin from "./FormLogin";
+import FormRegister from "./FormRegister";
+export { FormContracts, FormLogin, FormRegister };

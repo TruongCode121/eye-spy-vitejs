@@ -6,16 +6,22 @@ const headCells = [
     label: "Id",
   },
   {
+    id: "avatar",
+    numeric: false,
+    disablePadding: false,
+    label: "Avatar",
+  },
+  {
     id: "email",
     numeric: false,
     disablePadding: true,
     label: "Email",
   },
   {
-    id: "username",
-    numeric: true,
+    id: "gender",
+    numeric: false,
     disablePadding: false,
-    label: "Username",
+    label: "Gender",
   },
   {
     id: "fullname",
@@ -36,10 +42,10 @@ const headCells = [
     label: "position",
   },
   {
-    id: "createdate",
+    id: "createdAt",
     numeric: true,
     disablePadding: false,
-    label: "Create Date",
+    label: "createdAt",
   },
   {
     id: "action",
@@ -60,6 +66,12 @@ const headCellProducts = [
     numeric: true,
     disablePadding: false,
     label: "Name",
+  },
+  {
+    id: "category",
+    numeric: true,
+    disablePadding: false,
+    label: "Category",
   },
   {
     id: "image",
@@ -117,5 +129,79 @@ const headCellProducts = [
     label: "Action",
   },
 ];
+const headCellOrders = [
+  {
+    id: "stt",
+    numeric: false,
+    disablePadding: false,
+    label: "Stt",
+  },
+  {
+    id: "carts",
+    numeric: true,
+    disablePadding: true,
+    label: "Carts",
+  },
+  {
+    id: "gender",
+    numeric: false,
+    disablePadding: false,
+    label: "Gender",
+  },
+  {
+    id: "fullname",
+    numeric: false,
+    disablePadding: false,
+    label: "FullName",
+  },
 
-export { headCells, headCellProducts };
+  {
+    id: "email",
+    numeric: true,
+    disablePadding: false,
+    label: "Email",
+  },
+  {
+    id: "phone",
+    numeric: true,
+    disablePadding: false,
+    label: "Phone",
+  },
+  {
+    id: "address",
+    numeric: true,
+    disablePadding: false,
+    label: "Address",
+  },
+  {
+    id: "note",
+    numeric: true,
+    disablePadding: false,
+    label: "Note",
+  },
+  {
+    id: "codeOrders",
+    numeric: true,
+    disablePadding: false,
+    label: "CodeOrders",
+  },
+  {
+    id: "createdAt",
+    numeric: true,
+    disablePadding: false,
+    label: "CreatedAt",
+  },
+  {
+    id: "deliverystatus",
+    numeric: false,
+    disablePadding: false,
+    label: "deliveryStatus",
+  },
+  {
+    id: "action",
+    numeric: false,
+    disablePadding: false,
+    label: "Action",
+  },
+];
+export { headCells, headCellProducts, headCellOrders };

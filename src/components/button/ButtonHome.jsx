@@ -1,10 +1,15 @@
 import React from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-const ButtonHome = ({ children, className = "", onClick = () => {} }) => {
+const ButtonHome = ({
+  type = "submit",
+  children,
+  className = "",
+  onClick = () => {},
+}) => {
   return (
     <>
       <button
-        type="button"
+        type={type}
         className={`flex justify-center items-center font-bold py-2 px-4 gap-x-3   ${
           className
             ? className

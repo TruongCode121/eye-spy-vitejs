@@ -6,8 +6,17 @@ export default function useSearch() {
       data.map((item) => {
         let textEmail = item.email;
         let txtEmailUp = textEmail.toUpperCase();
-        let txtSearch = txtEmailUp.includes(valueSearch);
-        if (txtSearch) {
+        let txtSearchEmail = txtEmailUp.includes(valueSearch);
+
+        let textDepartment = item.department;
+        let txtDepartmentUp = textDepartment.toUpperCase();
+        let txtDepartmentSearch = txtDepartmentUp.includes(valueSearch);
+
+        let textPosition = item.position;
+        let txtPositionUp = textPosition.toUpperCase();
+        let txtPositionSearch = txtPositionUp.includes(valueSearch);
+
+        if (txtSearchEmail || txtPositionSearch || txtDepartmentSearch) {
           newArr = [...newArr, item];
         }
       });

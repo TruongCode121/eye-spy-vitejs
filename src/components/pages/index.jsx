@@ -5,6 +5,10 @@ import BlogPage from "./BlogPage";
 import LoginPage from "./LoginPage";
 import DashBoardPage from "./DashBoardPage";
 import OrderPage from "./OrderPage";
+import NotFoundPage from "./NotFoundPage";
+import InforUserPage from "./InforUserPage";
+import DetailPage from "./DetailPage";
+
 export {
   HomePage,
   IntroducePage,
@@ -13,4 +17,7 @@ export {
   LoginPage,
   DashBoardPage,
   OrderPage,
+  InforUserPage,
+  NotFoundPage,
+  DetailPage,
 };

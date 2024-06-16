@@ -1,14 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 // http://localhost:8000/accounts
 // http://localhost:8000/departments
 // http://localhost:8000/position
-import { urls } from "../fakeApis";
+// http://localhost:3000/accounts
 const initialState = {
   dataAccount: { status: "idle", accounts: [] },
   departments: [],
   positions: [],
+  Authen: {},
+  avatars: [],
 };
 
 export const accountSlice = createSlice({
@@ -68,6 +69,17 @@ export const accountSlice = createSlice({
         (account) => account.id != action.payload
       );
     },
+    setAvatars: (state, action) => {
+      return {
+        ...state,
+        avatars: action.payload,
+      };
+    },
+    deleteAvatar: (state, action) => {
+      state.avatars = state.avatars.filter(
+        (item) => item.url != action.payload
+      );
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -86,10 +98,11 @@ export const accountSlice = createSlice({
         state.positions = action.payload;
       })
       .addCase(fetchAddNewAccounts.fulfilled, (state, action) => {
-        state.dataAccount.accounts = [
-          ...state.dataAccount.accounts,
-          action.payload,
-        ];
+        // state.dataAccount.accounts = [
+        //   ...state.dataAccount.accounts,
+        //   action.payload,
+        // ];
+        state.dataAccount.accounts.unshift(action.payload);
         state.dataAccount.status = "idle";
       })
       .addCase(fetchUpdateAccounts.fulfilled, (state, action) => {
@@ -100,8 +113,10 @@ export const accountSlice = createSlice({
           if (item.id == arr.id) {
             return {
               ...item,
+              avatar: arr.avatar,
               email: arr.email,
-              username: arr.username,
+              gender: arr.gender,
+              password: arr.password,
               fullname: arr.fullname,
               department: arr.department,
               position: arr.position,
@@ -127,6 +142,8 @@ export const {
   setPage,
   deleteAccount,
   delAccount,
+  deleteAvatar,
+  setAvatars,
 } = accountSlice.actions;
 
 export default accountSlice.reducer;
@@ -172,7 +189,7 @@ export const fetchAddNewAccounts = createAsyncThunk(
   }
 );
 export const fetchUpdateAccounts = createAsyncThunk(
-  `"accounts/updateAccount"`,
+  `accounts/updateAccount`,
   async (newAccounts) => {
     axios
       .put(`http://localhost:3000/accounts/${newAccounts.id}`, newAccounts)

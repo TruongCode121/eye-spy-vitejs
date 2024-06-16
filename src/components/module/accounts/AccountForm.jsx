@@ -1,39 +1,40 @@
 import { Typography, Stack, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CpnButton } from "../button";
-import { InputFields, SelectFields } from "../../input";
+import { ButtonHome } from "../../button";
+import { PasswordFileds, RadioFileds, SelectFields } from "../../input";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from "react-toastify";
+import AccountsAvatarStore from "./AccountsAvatarStore";
+import Overplay from "../../layout/Overplay";
 import {
   fetchAddNewAccounts,
   fetchUpdateAccounts,
-} from "../../redux/accountSlice";
-import { toast } from "react-toastify";
+} from "../../../redux/accountSlice";
+import moment from "moment";
 const schema = yup.object({
   email: yup
     .string()
     .email("Please enter valid email address!")
     .required("Please enter email you!"),
-  username: yup
+  gender: yup.string().required("Please choose gender for you!"),
+  password: yup
     .string()
-    .min(8, "Your username must be at least 8 characters or greater")
-    .required("Enter your username!"),
+    .min(8, "Your password must be at least 8 characters or greater")
+    .required("please enter your password"),
   fullname: yup.string().required("Fullname can not be empty!"),
   department: yup.string().required("Please select department!"),
   position: yup.string().required("Please select position!"),
 });
-let date = new Date();
-let year = date.getFullYear();
-let month = date.getUTCMonth() + 1;
-let day = date.getUTCDate();
-const AccountForm = ({ data, btnSubmit = "Create", closeModal }) => {
-  const { dataAccount, departments, positions } = useSelector(
+const AccountForm = ({ data, btnSubmit = "Create", closeModal, toggle }) => {
+  const { avatars, departments, positions, dataAccount } = useSelector(
     (state) => state.accounts
   );
-
+  const [img, setImg] = useState("");
+  const [onListImg, setOnListImg] = useState(false);
   const {
     handleSubmit,
     reset,
@@ -47,80 +48,113 @@ const AccountForm = ({ data, btnSubmit = "Create", closeModal }) => {
 
   const dispatch = useDispatch();
   const handleAddNewAccount = (values) => {
-    closeModal();
-    console.log("update item", values);
+    let accounts = [...dataAccount.accounts];
+    let checkEmail = [];
+    accounts.map((item) => {
+      if (item.email.includes(values.email)) {
+        checkEmail = [...checkEmail, item];
+      }
+    });
     if (data) {
-      let id = data.id;
-      let putAccount = {
-        email: values.email,
-        username: values.username,
-        fullname: values.fullname,
-        department: values.department,
-        position: values.position,
-        createdAt:
-          data.createdAt == "" || data.createdAt == undefined
-            ? `${day}/${month}/${year}`
-            : data.createdAt,
-      };
-      dispatch(
-        fetchUpdateAccounts({
-          id,
-          email: values.email,
-          username: values.username,
-          fullname: values.fullname,
-          department: values.department,
-          position: values.position,
-          createdAt:
-            data.createdAt == "" || data.createdAt == undefined
-              ? `${day}/${month}/${year}`
-              : data.createdAt,
-        })
-      );
       if (
+        img != data.imageProduct ||
         values.email != data.email ||
-        values.username != data.username ||
+        values.gender != data.gender ||
         values.fullname != data.fullname ||
+        values.password != data.password ||
         values.department != data.department ||
         values.position != data.position
       ) {
         toast.success("Update item success!");
+        dispatch(
+          fetchUpdateAccounts({
+            id: data.id,
+            avatar: img.length > 0 ? img : data.avatar,
+            email: values.email,
+            gender: values.gender,
+            password: values.password,
+            fullname: values.fullname,
+            department: values.department,
+            position: values.position,
+            createdAt:
+              data.createdAt == "" || data.createdAt == undefined
+                ? `${moment().format("DD/MM/YYYY")}`
+                : data.createdAt,
+          })
+        );
       } else {
         toast.warning("No change value!");
       }
+      closeModal();
     } else {
       let newAccount = {
         id: uuidv4(),
+        avatar: img,
         email: values.email,
-        username: values.username,
+        gender: values.gender,
         fullname: values.fullname,
+        password: values.password,
         department: values.department,
         position: values.position,
-        createdAt: `${day}/${month}/${year}`,
+        createdAt: `${moment().format("D/M/YYYY")}`,
       };
-      console.log("newAccount", newAccount);
-      // dispatch(addNewAccount(newAccount));
-      dispatch(fetchAddNewAccounts(newAccount));
-      // callApiPostData(accountURL, newAccount);
-      // handleAsyncfunction();
-      // dispatch(
-      //   addNewAccount({
-      //     id: uuidv4(),
-      //     email: values.email,
-      //     username: values.username,
-      //     fullname: values.fullname,
-      //     department: values.department,
-      //     position: values.position,
-      //     createdate: `${day}-${month}-${year}`,
-      //   })
-      // );
-      toast.success("Thêm mới account thành công!");
-      reset();
+      if (checkEmail.length > 0) {
+        toast.warning("Email đã được đăng ký!");
+      } else {
+        if (img.length > 0) {
+          dispatch(fetchAddNewAccounts(newAccount));
+          toast.success("Thêm mới account thành công!");
+          closeModal();
+          reset();
+        } else {
+          toast.error("Chưa có ảnh avatar!");
+        }
+      }
     }
   };
+  const handleSelectImgProduct = (link) => {
+    setImg(link);
+    setOnListImg(false);
+  };
+  console.log("img", img);
   return (
     <>
-      <form action="" onSubmit={handleSubmit(handleAddNewAccount)}>
-        <Stack sx={{ my: 2 }} bgcolor="lightblue" height={2}></Stack>
+      <Overplay
+        toggle={onListImg}
+        status={false}
+        onClick={setOnListImg}
+      ></Overplay>
+      <Stack sx={{ my: 2 }} bgcolor="lightblue" height={2}></Stack>
+      <AccountsAvatarStore
+        data={data}
+        img={img}
+        onListImg={onListImg}
+        setOnListImg={setOnListImg}
+        avatars={avatars}
+        handleSelectImgProduct={handleSelectImgProduct}
+      ></AccountsAvatarStore>
+      <form
+        className={` ${
+          toggle == false ? "translate-x-[-100%]" : "translate-x-0 z-10"
+        }`}
+        action=""
+        onSubmit={handleSubmit(handleAddNewAccount)}
+      >
+        <TextField
+          label="Fullname"
+          variant="standard"
+          defaultValue={data ? data.fullname : ""}
+          {...register("fullname")}
+          error={errors.fullname && true}
+          helperText={errors.fullname && errors.fullname.message}
+          sx={{ width: "100%" }}
+        ></TextField>
+        <RadioFileds
+          defaultValue={data ? data.gender : ""}
+          register={register}
+          helperText={errors.gender && errors.gender.message}
+        ></RadioFileds>
+
         <TextField
           label="Email"
           variant="standard"
@@ -130,24 +164,12 @@ const AccountForm = ({ data, btnSubmit = "Create", closeModal }) => {
           sx={{ width: "100%", mb: 2 }}
           helperText={errors.email ? errors.email.message : ""}
         ></TextField>
-        <TextField
-          label="Username"
-          defaultValue={data ? data.username : ""}
-          {...register("username")}
-          variant="standard"
-          error={errors.username && true}
-          helperText={errors.username && errors.username.message}
-          sx={{ width: "100%", mb: 2 }}
-        ></TextField>
-        <TextField
-          label="Fullname"
-          variant="standard"
-          defaultValue={data ? data.fullname : ""}
-          {...register("fullname")}
-          error={errors.fullname && true}
-          helperText={errors.fullname && errors.fullname.message}
-          sx={{ width: "100%", mb: 2 }}
-        ></TextField>
+        <PasswordFileds
+          defaultValue={data ? data.password : ""}
+          register={register}
+          error={errors.password && true}
+          helperText={errors.password && errors.password.message}
+        ></PasswordFileds>
         <br />
         <SelectFields
           Label={"Select a Department"}
@@ -170,9 +192,11 @@ const AccountForm = ({ data, btnSubmit = "Create", closeModal }) => {
           error={errors.position && true}
           helperText={errors.position && errors.position.message}
         ></SelectFields>
-        <Typography sx={{ float: "right" }} component="div">
-          <CpnButton>{btnSubmit}</CpnButton>
-        </Typography>
+        <div className="flex justify-end">
+          <ButtonHome className="flex justify-center bg-green-500 text-white rounded hover:bg-green-600 ">
+            {data ? "Save" : "Create"}
+          </ButtonHome>
+        </div>
         {/* </Stack> */}
       </form>
     </>

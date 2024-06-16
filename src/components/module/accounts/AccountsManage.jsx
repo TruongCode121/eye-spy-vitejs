@@ -21,8 +21,7 @@ import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
-import { BasicModal } from "../../modal";
-import { FormAccount } from "../../form";
+import { BasicModal, ModalAccounts } from "../../modal";
 import { headCells } from "../../utils/data";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { useDispatch, useSelector } from "react-redux";
@@ -157,7 +156,7 @@ function EnhancedTableToolbar(props) {
           return item;
         })
         .join(" ## ")}`,
-      icon: "warning",
+      icon: "error",
       showCancelButton: true,
       confirmButtonColor: "#1DC071",
       cancelButtonColor: "#d33",
@@ -229,6 +228,7 @@ EnhancedTableToolbar.propTypes = {
 
 export default function AccountsManage() {
   const { dataAccount, inputSearch } = useSelector((state) => state.accounts);
+  const { auth } = useSelector((state) => state.auth);
   const { newSlice } = useSliceString();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -243,6 +243,8 @@ export default function AccountsManage() {
   const rows = dataSearch(dataAccount.accounts, valueSearch);
   console.log("dataAccount.accounts", dataAccount.accounts);
 
+  console.log("auth", auth);
+
   React.useEffect(() => {
     if (valueSearch.length > 0) {
       setPage(0);
@@ -255,7 +257,9 @@ export default function AccountsManage() {
   };
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = rows.map(
+        (n) => n.id != "f9f4901d-9fc9-4979-b0cc-b474b5c27d16" && n.id
+      );
       setSelected(newSelected);
       return;
     }
@@ -322,12 +326,13 @@ export default function AccountsManage() {
       }}
     >
       <div className="flex items-center gap-x-10 justify-between">
-        <BasicModal variant="contained" color="info"></BasicModal>
+        {/* <BasicModal variant="contained" color="info"></BasicModal> */}
+        <ModalAccounts></ModalAccounts>
         {/* <button className="btn bg-stone-400 " onClick={handlePageDelete}>
           Delete test
         </button> */}
         <SearchData
-          label="Search email account..."
+          label="Search email, department, position..."
           setValueSearch={setValueSearch}
         ></SearchData>
       </div>
@@ -337,7 +342,7 @@ export default function AccountsManage() {
           selectIds={selected}
           dispatch={dispatch}
           // handlePageRezo={handlePageRezo}
-          numSelected={selected.length}
+          numSelected={selected.length - 1}
           setSelected={setSelected}
           setPage={setPage}
           // fetchListData={fetchListData}
@@ -372,16 +377,29 @@ export default function AccountsManage() {
                     sx={{ cursor: "pointer" }}
                   >
                     <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        onClick={(event) => handleClick(event, row.id)}
-                        checked={isItemSelected}
-                        inputProps={{
-                          "aria-labelledby": labelId,
-                        }}
+                      <div
+                        className={`${
+                          row.email == "adminTest1122@gmail.com" ? "hidden" : ""
+                        }`}
+                      >
+                        <Checkbox
+                          color="primary"
+                          onClick={(event) => handleClick(event, row.id)}
+                          checked={isItemSelected}
+                          inputProps={{
+                            "aria-labelledby": labelId,
+                          }}
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell align="left">{index + 1}</TableCell>
+                    <TableCell align="left">
+                      <img
+                        src={row.avatar}
+                        alt=""
+                        className="h-16 w-16 rounded"
                       />
                     </TableCell>
-                    <TableCell align="left">{row.id}</TableCell>
                     <TableCell
                       component="th"
                       id={labelId}
@@ -390,57 +408,66 @@ export default function AccountsManage() {
                     >
                       {row.email}
                     </TableCell>
-                    <TableCell align="left">{row.username}</TableCell>
+                    <TableCell align="left">
+                      {row.gender == "male" ? "Nam" : "Nữ"}
+                    </TableCell>
                     <TableCell align="left">{row.fullname}</TableCell>
                     <TableCell align="left">{row.department}</TableCell>
                     <TableCell align="left">{row.position}</TableCell>
                     <TableCell align="left">{row.createdAt}</TableCell>
+
                     <TableCell align="left">
-                      <Stack direction="row" spacing={2}>
-                        <BasicModal
-                          variant="outlined"
-                          color="primary"
-                          textButton={
-                            <AssignmentIndIcon color="white" fontSize="small" />
-                          }
-                          data={row}
-                          header="id: "
-                          hideBtnClose={false}
-                        >
-                          <Cards data={row}>
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div"
-                            >
-                              {row.email}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Username: {row.username} <br />
-                              Fullname: {row.fullname} <br />
-                              Department: {row.department} <br />
-                              Position: {row.position} <br />
-                              {row.createdate}
-                            </Typography>
-                          </Cards>
-                        </BasicModal>
-                        <BasicModal
-                          variant="outlined"
-                          color="warning"
-                          textButton={
-                            <BorderColorIcon color="white" fontSize="small" />
-                          }
-                          data={row}
-                          header="Edit id = "
-                        ></BasicModal>
-                      </Stack>
+                      {auth[0]?.position == "Dev" && (
+                        <Stack direction="row" spacing={2}>
+                          <BasicModal
+                            variant="outlined"
+                            className="btn bg-primary h-8 w-8 text-white"
+                            color="primary"
+                            textButton={
+                              <AssignmentIndIcon
+                                color="white"
+                                fontSize="small"
+                              />
+                            }
+                            data={row}
+                            header="id: "
+                            hideBtnClose={false}
+                          >
+                            <Cards data={row}>
+                              <Typography
+                                gutterBottom
+                                variant="h5"
+                                component="div"
+                              >
+                                {row.email}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                Username: {row.username} <br />
+                                Fullname: {row.fullname} <br />
+                                Department: {row.department} <br />
+                                Position: {row.position} <br />
+                                {row.createdate}
+                              </Typography>
+                            </Cards>
+                          </BasicModal>
+                          <ModalAccounts
+                            data={row}
+                            textBtn={
+                              <BorderColorIcon color="white" fontSize="small" />
+                            }
+                          ></ModalAccounts>
+                        </Stack>
+                      )}
                     </TableCell>
                   </TableRow>
                 );
               })}
               {dataAccount.accounts.length == 0 && (
                 <TableRow>
-                  <TableCell colSpan={9}>
+                  <TableCell colSpan={10}>
                     <Box sx={{ width: "100%" }}>
                       <Skeleton sx={{ height: "50px" }} />
                       <Skeleton sx={{ height: "50px" }} animation="wave" />
@@ -456,7 +483,7 @@ export default function AccountsManage() {
                     height: (dense ? 33 : 53) * emptyRows,
                   }}
                 >
-                  <TableCell colSpan={9} />
+                  <TableCell colSpan={10} />
                 </TableRow>
               )}
             </TableBody>
