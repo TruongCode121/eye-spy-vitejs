@@ -120,6 +120,17 @@
       "department": "No person",
       "position": "Client",
       "createdAt": "14/05/2024"
+    },
+    {
+      "id": "a55a3a4d-023c-4311-a3bb-1f26b541482c",
+      "avatar": "https://firebasestorage.googleapis.com/v0/b/eye-spy-vitejs-ff812.appspot.com/o/avatars%2Fa80e82c6-36ae-403d-b4a9-3ef576cc4b76?alt=media&token=640d4b48-1f2d-4fbf-a27c-dde7b4e44321",
+      "email": "Email122@gmail.com",
+      "gender": "male",
+      "password": "Email122",
+      "fullname": "nguyen thi hoa2",
+      "department": "Kỹ thuật",
+      "position": "Dev",
+      "createdAt": "1/7/2024"
     }
   ],
   "departments": [
@@ -1542,6 +1553,34 @@
         }
       ],
       "totalPriceCarts": 1076
+    },
+    {
+      "id": "2d1bd7e6-7437-4bc3-aef2-6e8bbde35888",
+      "address": "Bắc Từ Liêm - Hà Nội",
+      "phone": 366981264,
+      "email": "Email1@gmail.com",
+      "fullname": "nguyen tu xuan truong",
+      "codeOrders": "#23EC2CA",
+      "createdAt": "01/07/2024",
+      "statusOrder": true,
+      "deliveryStatus": true,
+      "gender": "male",
+      "note": "aaaa",
+      "carts": [
+        {
+          "product_id": "d6894a07-7030-497e-b1b3-65225bd367dc",
+          "quantity": 3
+        },
+        {
+          "product_id": "566835a8-8636-4905-804c-eacd1d5ecc0d",
+          "quantity": 1
+        },
+        {
+          "product_id": "9729ebf4-081f-4125-a401-a00805640caa",
+          "quantity": 1
+        }
+      ],
+      "totalPriceCarts": 67500000
     }
   ]
 }

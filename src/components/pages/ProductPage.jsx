@@ -83,6 +83,7 @@ function valuetext(value) {
 
 const ProductPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [params] = useSearchParams();
   const { convertToNumber } = useNumber();
   const categoryName = params.get("category");
@@ -124,6 +125,7 @@ const ProductPage = () => {
     setValueSort(e.target.value);
   };
   const dataSearch = (data, inputSearch) => {
+    window.scrollTo(0, 420);
     let newArr = [];
     let valueSearch = inputSearch ? inputSearch.toUpperCase() : "";
     if (valueSearch.length > 0) {
@@ -252,30 +254,8 @@ const ProductPage = () => {
     }
   };
   console.log(valueSort);
-  // const resultProduct = HandleFilterCate(
-  //   HandleFilterBrand(handleSortProduct(handleFilPrice()), nameBrand),
-  //   newCategoryName
-  // ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  const resultProduct = checkTheGoods(
-    dataSearch(
-      HandleFilCateBrandMaterial(
-        HandleFilCateBrandMaterial(
-          HandleFilCateBrandMaterial(
-            handleSortProduct(handleFilPrice()),
-            nameMaterial,
-            "MATERIAL"
-          ),
-          nameBrand,
-          "BRAND"
-        ),
-        newCategoryName,
-        "CATEGORY"
-      ),
-      valueSearch
-    )
-  ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  const countPagina = checkTheGoods(
+  const products = checkTheGoods(
     dataSearch(
       HandleFilCateBrandMaterial(
         HandleFilCateBrandMaterial(
@@ -292,7 +272,11 @@ const ProductPage = () => {
       ),
       valueSearch
     )
-  ).length;
+  );
+  const resultProduct = products.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -412,7 +396,7 @@ const ProductPage = () => {
                   <TablePagination
                     rowsPerPageOptions={[12, 24, 36]}
                     component="div"
-                    count={countPagina}
+                    count={products.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
