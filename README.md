@@ -1,6 +1,7 @@
 # React + Vite
 
 $ npm i
+
 $ npm run dev
 
 json-server API:
